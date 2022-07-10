@@ -11,6 +11,15 @@ namespace Graph
             return null;
         }
 
+        public static List<Graph<T>.Node>? Dijstra<T>(
+            Graph<T> graph,
+            Graph<T>.Node endingNode,
+            bool printEnqueueCount,
+            Graph<T>.Node? startingNode = null)
+        {
+            return null;
+        }
+
         public static List<Graph<T>.Node>? Greedy<T>(
             Graph<T> graph,
             Graph<T>.Node endingNode,

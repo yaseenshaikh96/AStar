@@ -2,16 +2,18 @@ namespace Graph
 {
     public static class ExampleGraph
     {
-        public static Graph<float> ExampleGraph7(
+        public static Graph<Graph.NodeData> ExampleGraph7(
             int width, int height,
             int goalX, int goalY)
         {
-            var graph = new Graph<float>();
-            Graph<float>.Node[,] nodes = new Graph<float>.Node[width, height];
+            var graph = new Graph<Graph.NodeData>();
+            Graph<Graph.NodeData>.Node[,] nodes = new Graph<Graph.NodeData>.Node[width, height];
             for (int i = 0; i < width; i++)
                 for (int j = 0; j < height; j++)
-                    nodes[i, j] = new Graph<float>.Node(graph, $"Node[{i}, {j}]");
-
+                {
+                    nodes[i, j] = new Graph<Graph.NodeData>.Node(graph, $"Node[{i}, {j}]");
+                    nodes[i, j].data = new NodeData();
+                }
             //  -1-1 -1.0 -1+1
             //  .0-1 .0.0 .0+1
             //  +1-1 +1.0 +1+1
@@ -71,14 +73,19 @@ namespace Graph
             return graph;
 
             void SetSourceAndGoal(
-                Graph.Graph<float> graph)
+                Graph.Graph<Graph.NodeData> graph)
             {
                 for (int i = 0; i < width; i++)
                     for (int j = 0; j < height; j++)
-                        nodes[i, j].data = ChebyshevDistance(goalX, goalY, i, j);
+                    {
+                        var currentNode = nodes[i, j];
+                        if (currentNode.data == null) continue;
+                        currentNode.data.stepDist = ChebyshevDistance(goalX, goalY, i, j);
+                    }
             }
             static int ChebyshevDistance(int x1, int y1, int x2, int y2) =>
                 (int)MathF.Max(Math.Abs(x1 - x2), Math.Abs(y1 - y2));
+
 
         }
         public static Graph<int> ExampleGraph6()

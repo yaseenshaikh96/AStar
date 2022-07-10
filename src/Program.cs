@@ -6,12 +6,12 @@ public class Program
     {
         HandleInput(args);
 
-        Graph.Graph<float> graph = Graph.ExampleGraph.ExampleGraph7(width, height, goalX, goalY);
+        Graph.Graph<Graph.NodeData> graph = Graph.ExampleGraph.ExampleGraph7(width, height, goalX, goalY);
         // graph.PrintGraph();
         PrintGraph(graph, width, height);
     }
 
-    private static void PrintGraph(Graph.Graph<float> graph, int width, int height)
+    private static void PrintGraph(Graph.Graph<Graph.NodeData> graph, int width, int height)
     {
         int gap = 8;
         char[,] screenBuffer = new char[width * gap - gap / 2, height * gap - gap / 2];
@@ -31,7 +31,12 @@ public class Program
             {
                 int x = i / gap, y = j / gap;
                 int index = x * height + y;
-                float data = graph.GetNodes()[index].data;
+                int? stepDist = nodes[index].data?.stepDist;
+                float data;
+                if (stepDist == null)
+                    data = 9999;
+                else
+                    data = (float)stepDist;
                 string numStr = ToString(data, gap / 2);
                 for (int j2 = 0; j2 < gap / 2; j2++)
                     screenBuffer[i, j + j2] = numStr[j2];
@@ -47,7 +52,6 @@ public class Program
             System.Console.Write('\n');
         }
     }
-
     static string ToString(float value, int precision)
     {
         string output = value.ToString();
@@ -60,21 +64,19 @@ public class Program
         output = output.Substring(0, index);
         return output.PadRight(precision, '_');
     } //  most significant digit
-
-
     static void HandleInput(string[] args)
     {
         if (args.Length < 4)
-            Exit("invalid input");
-        width = ToString(args[0]);
-        height = ToString(args[1]);
-        goalX = ToString(args[2]);
-        goalY = ToString(args[3]);
+            Exit("invalid input: format: dotnet run width height goalIndexX goalIndexY");
+        width = ToInt(args[0]);
+        height = ToInt(args[1]);
+        goalX = ToInt(args[2]);
+        goalY = ToInt(args[3]);
         if (width < 0 || height < 0 || goalX < 0 || goalY < 0
             || goalX > width - 1 || goalY > height - 1)
-            Exit("invalid input");
+            Exit("invalid input: format: dotnet run width height goalIndexX goalIndexY");
     }
-    static int ToString(string str)
+    static int ToInt(string str)
     {
         int output;
         bool success = System.Int32.TryParse(str, out output);
